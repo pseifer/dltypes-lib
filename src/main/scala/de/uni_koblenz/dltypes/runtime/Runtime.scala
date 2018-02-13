@@ -22,7 +22,7 @@ object Sparql {
     def sparql(args: Any*): List[IRI] = {
       val strings = sc.parts.iterator
       val exprs = args.iterator
-      var buf = new StringBuffer(strings.next)
+      val buf = new StringBuffer(strings.next)
       while(strings.hasNext) { // exprs.length == strings.length + 1 is always true
         buf.append(exprs.next)
         buf.append(strings.next)
@@ -30,6 +30,7 @@ object Sparql {
       JRDFoxBackend.run(buf.toString)
     }
   }
+
 
   implicit class IriHelper(val sc: StringContext) extends AnyVal {
     def iri(args: Any*): IRI = {

@@ -28,8 +28,7 @@ object QueryBuilder {
       //case Negation(c) => "TODO"
       case Concept(i) =>
         s"$s a $i."
-      //case Universal(Role(r), rexpr) =>
-        //s""
+      //case Universal(Role(r), rexpr) => "TODO"
         // IRI(<>).isInstanceOf[#A :headOf.:Department]
         // -> !ASK { NOT EXISTS { <> :headOf ?x. MINUS { ?x a :Department. } } }
       case Existential(Role(r), Nominal(n)) =>
@@ -46,9 +45,9 @@ object QueryBuilder {
   }
 
   def askInstanceOf(value: String, tpe: String): String = {
-    val dle = parser.parse(parser.dlexpr, tpe) match {
+    val dle = parser.parse(parser.dlexpr, Util.decode(tpe)) match {
       case parser.Success(m, _) => m.asInstanceOf[DLEConcept]
-      case parser.NoSuccess(_, _) => throw new RuntimeException("[DL-RUNTIME] invalid type.")
+      case parser.NoSuccess(s, msg) => throw new RuntimeException("[DL-RUNTIME] invalid type." + msg + " " + s)
       // TODO Note: This has no business being <actually> detected during runtime!
     }
 

@@ -2,23 +2,25 @@ package de.uni_koblenz.dltypes
 package tools
 
 object Util {
-  val dlcharmap: List[(String, String)] =
-    ("$colon", ":") ::
-    ("$hash",  "#") ::
-    ("$bar",   "|") ::
-    ("$amp",   "&") ::
-    ("$bang",  "!") ::
-    ("$u22A4", "⊤") ::
-    ("$u22A5", "⊥") ::
-    ("$u2200", "∀") ::
-    ("$u2203", "∃") ::
-    ("$u00AC", "¬") ::
-    ("$u2293", "⊓") ::
-    ("$u2294", "⊔") ::
-    Nil
+  val dlcharmap: Map[String, String] = Map(
+    "$colon" -> ":",
+    "$dot"   -> ".",
+    "$hash"  -> "#" ,
+    "$bar"   -> "|",
+    "$amp"   -> "&",
+    "$bang"  -> "!",
+    "$u002E" -> ".",
+    "$u22A4" -> "⊤",
+    "$u22A5" -> "⊥",
+    "$u2200" -> "∀",
+    "$u2203" -> "∃",
+    "$u00AC" -> "¬",
+    "$u2293" -> "⊓",
+    "$u2294" -> "⊔")
 
-  val dlchars: List[String] = dlcharmap.map(_._1)
+  def decode(s: String): String =
+    dlcharmap.foldLeft(s) { (a,b) => a.replaceAllLiterally(b._1, b._2) }
 
   def isDLTypeHeuristic(s: String): Boolean =
-    dlchars.exists(s.contains)
+    dlcharmap.keys.exists(s.contains)
 }
