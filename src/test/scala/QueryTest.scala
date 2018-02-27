@@ -42,7 +42,7 @@ class QueryTest extends FreeSpec {
   }
 
   "ask1" in {
-    val x = JRDFoxBackend.ask(
+    val x = StardogBackend.ask(
       """
         |PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         |PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -54,7 +54,7 @@ class QueryTest extends FreeSpec {
   }
 
   "ask2" in {
-    val x = JRDFoxBackend.ask(
+    val x = StardogBackend.ask(
       """
         |PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         |PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -68,7 +68,7 @@ class QueryTest extends FreeSpec {
   // Negation test:
 
   "test00" in {
-    val x = JRDFoxBackend.ask(
+    val x = StardogBackend.ask(
       """
         |PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         |PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -138,7 +138,7 @@ class QueryTest extends FreeSpec {
     println(ndl)
     val query = QueryBuilder.conceptToQuery("<http://www.Department0.University0.edu/FullProfessor0>", ndl)
     println(query)
-    val x = JRDFoxBackend.ask(prefixes + s"ASK { $query }")
+    val x = StardogBackend.ask(prefixes + s"ASK { $query }")
     println(x)
     assert(true)
   }

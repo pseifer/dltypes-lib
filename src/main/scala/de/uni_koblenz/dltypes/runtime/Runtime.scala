@@ -13,13 +13,13 @@ sealed trait DLType {
 
 case class IRI(value: String) extends DLType {
   def isSubsumed(tpe: String): Boolean =
-    JRDFoxBackend.ask(QueryBuilder.askInstanceOf(value, tpe))
+    StardogBackend.ask(QueryBuilder.askInstanceOf(value, tpe))
 }
 
 
 object Sparql {
   implicit class SparqlHelper(val sc: StringContext) extends AnyVal {
-    def sparql(args: Any*): List[IRI] = {
+    def sparql(args: Any*): List[List[IRI]] = {
       val strings = sc.parts.iterator
       val exprs = args.iterator
       val buf = new StringBuffer(strings.next)
@@ -27,7 +27,7 @@ object Sparql {
         buf.append(exprs.next)
         buf.append(strings.next)
       }
-      JRDFoxBackend.run(buf.toString)
+      StardogBackend.run(buf.toString)
     }
   }
 
