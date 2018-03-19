@@ -26,7 +26,7 @@ class Parser extends RegexParsers {
   def CONCEPT: Parser[Concept] = IRI ^^ { s => Concept(s) }
   def ROLE: Parser[Role] = IRI ^^ { r => Role(r) }
   def NEGATED_ROLE: Parser[Inverse] = NEGATION_TOKEN ~ ROLE ^^ { case _ ~ r => Inverse(r) }
-  def INDIVIDUAL: Parser[DLEIndividual] = IRI ^^ { Individual }
+  def INDIVIDUAL: Parser[DLEIndividual] = IRI ^^ { case i => Individual(i) }
 
   // Tokens.
   def UNION_TOKEN: Parser[Any] = "|" | "⊔"

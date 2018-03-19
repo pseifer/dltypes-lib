@@ -1,5 +1,4 @@
 import de.uni_koblenz.dltypes.runtime.IRI
-import de.uni_koblenz.dltypes.tools.{JRDFoxBackend, QueryBuilder}
 import de.uni_koblenz.dltypes.tools._
 import org.scalatest._
 

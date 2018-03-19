@@ -1,6 +1,7 @@
 import de.uni_koblenz.dltypes.tools.StardogBackend
 import org.scalatest._
 
+
 class StardogTest extends FreeSpec {
   "simple example" in {
     val r = StardogBackend.run(

@@ -58,7 +58,7 @@ object QueryBuilder {
     }
 
     Gensym.reset()
-    prefixes + s"ASK { ${conceptToQuery(value, Util.simplify(dle))} }"
+    prefixes + s"ASK { ${conceptToQuery(value, DLEConcept.simplifyPlus(dle))} }"
   }
 }
 
