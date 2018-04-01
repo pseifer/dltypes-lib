@@ -50,15 +50,9 @@ object QueryBuilder {
     }
   }
 
-  def askInstanceOf(value: String, tpe: String): String = {
-    val dle = parser.parse(parser.dlexpr, Util.decode(tpe)) match {
-      case parser.Success(m, _) => m.asInstanceOf[DLEConcept]
-      case parser.NoSuccess(s, msg) => throw new RuntimeException("[DL-RUNTIME] invalid type." + msg + " " + s)
-      // TODO Note: This has no business being <actually> detected during runtime!
-    }
-
+  def askInstanceOf(value: String, tpe: DLEConcept): String = {
     Gensym.reset()
-    prefixes + s"ASK { ${conceptToQuery(value, DLEConcept.simplifyPlus(dle))} }"
+    prefixes + s"ASK { ${conceptToQuery(value, DLEConcept.simplifyPlus(tpe))} }"
   }
 }
 

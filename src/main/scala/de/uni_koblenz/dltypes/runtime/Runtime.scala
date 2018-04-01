@@ -7,12 +7,12 @@ import tools._
 // Type that is used to represent DLTypes at compile time
 // and is also the supertype of all runtime DLTypes.
 sealed trait DLType {
-  def isSubsumed(tpe: String): Boolean
+  def isSubsumed(tpe: DLEConcept): Boolean
 }
 
 
 case class IRI(value: String) extends DLType {
-  def isSubsumed(tpe: String): Boolean =
+  def isSubsumed(tpe: DLEConcept): Boolean =
     StardogBackend.ask(QueryBuilder.askInstanceOf(value, tpe))
 }
 
