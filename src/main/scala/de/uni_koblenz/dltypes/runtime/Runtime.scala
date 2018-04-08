@@ -29,6 +29,9 @@ object Sparql {
       }
       StardogBackend.run(buf.toString)
     }
+
+    // Strict type checking for result type.
+    def strictsparql(args: Any*): List[List[IRI]] = sparql(args)
   }
 
 
