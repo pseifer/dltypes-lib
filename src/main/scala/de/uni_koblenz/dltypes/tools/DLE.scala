@@ -4,8 +4,11 @@ package tools
 import scala.collection.mutable.SetBuilder
 import org.semanticweb.owlapi.model._
 
+object DLE { val pp = new PrettyPrinter }
 
-sealed trait DLE
+sealed trait DLE {
+  def pretty: String = DLE.pp.print(this)
+}
 
 sealed trait DLETruthy extends DLE
 case class Subsumed(c: DLEConcept, d: DLEConcept) extends DLETruthy
@@ -109,6 +112,13 @@ case class Union(lexpr: DLEConcept, rexpr: DLEConcept) extends DLEConcept {
 }
 
 object DLEConcept {
+
+  def intersectionOf(cs: List[DLEConcept]): DLEConcept =
+    simplify(cs.foldLeft(Top: DLEConcept)(Intersection))
+
+  def unionOf(cs: List[DLEConcept]): DLEConcept =
+    simplify(cs.foldLeft(Bottom: DLEConcept)(Union))
+
   // Substitute variable with expression.
   def substitute(concept: DLEConcept, v: Variable, other: DLEConcept): DLEConcept = {
     def p(c: DLEConcept): DLEConcept = {

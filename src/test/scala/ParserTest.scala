@@ -73,6 +73,7 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
   "The Parser" should "parse existential and universal quantification" in {
     implicit val parserToTest: Parser[DLEConcept] = dlexpr
     // Basic cases (with nominals).
+    parsing("{:Chardonnay}") should equal(Nominal(":Chardonnay"))
 
     parsing("#A:hasColor.{:Red}") should equal(Universal(Role(":hasColor"), Nominal(":Red")))
     parsing("#E:hasColor.{:Red}") should equal(Existential(Role(":hasColor"), Nominal(":Red")))
@@ -136,5 +137,21 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
     parsing("!:Wine & :Food | :Door & :Wall") should equal(Union(Intersection(Negation(Concept(":Wine")), Concept(":Food")), Intersection(Concept(":Door"), Concept(":Wall"))))
     parsing("!(:Wine & :Food) | :Door & :Wall") should equal(Union(Negation(Intersection(Concept(":Wine"), Concept(":Food"))), Intersection(Concept(":Door"), Concept(":Wall"))))
     parsing("!(:Wine & :Food | :Door & :Wall)") should equal(Negation(Union(Intersection(Concept(":Wine"), Concept(":Food")), Intersection(Concept(":Door"), Concept(":Wall")))))
+  }
+
+  "The Parser" should "parse scala types" in {
+    implicit val parserToTest: Parser[DLEConcept] = dlexpr
+    //parsing("Int") should equal(Type("Int"))
+    //parsing("String") should equal(Type("String"))
+    //parsing("Double") should equal(Type("Double"))
+    //parsing("Float") should equal(Type("Float"))
+    //parsing("Boolean") should equal(Type("Boolean"))
+
+    parsing("#E:isAge.Int") should equal(Existential(Data(":isAge"), Type("Int")))
+    parsing("#E:isAge.<xsd:integer>") should equal(Existential(Data(":isAge"), Type("xsd:integer")))
+    parsing("#E:isAge.<xsd:integer> | #A:hasColor.{:Red}") should equal(
+      Union(
+      Existential(Data(":isAge"), Type("xsd:integer")),
+      Universal(Role(":hasColor"), Nominal(":Red"))))
   }
 }
