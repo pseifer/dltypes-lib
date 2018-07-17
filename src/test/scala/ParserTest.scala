@@ -25,6 +25,8 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
   "The Parser" should "parse simple iri" in {
     implicit val parserToTest: Parser[String] = IRI
     parsing(":Wine") should equal(":Wine")
+    parsing("<:Wine>") should equal(":Wine")
+    parsing("<http://www.ontology.org#Wine>") should equal("http://www.ontology.org#Wine")
   }
 
   "The Parser" should "parse top" in {
@@ -73,6 +75,7 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
   "The Parser" should "parse existential and universal quantification" in {
     implicit val parserToTest: Parser[DLEConcept] = dlexpr
     // Basic cases (with nominals).
+    parsing("{:Chardonnay}") should equal(Nominal(":Chardonnay"))
 
     parsing("#A:hasColor.{:Red}") should equal(Universal(Role(":hasColor"), Nominal(":Red")))
     parsing("#E:hasColor.{:Red}") should equal(Existential(Role(":hasColor"), Nominal(":Red")))
@@ -122,6 +125,7 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
     parsing("#A:hasColor.{:Red} | {:White}") should not equal(Universal(Role(":hasColor"), Union(Nominal(":Red"), Nominal(":White"))))
     parsing("#A:hasColor.{:Red} | {:White}") should equal(Union(Universal(Role(":hasColor"), Nominal(":Red")), Nominal(":White")))
     parsing("#A:hasColor.({:Red} | {:White})") should equal(Universal(Role(":hasColor"), Union(Nominal(":Red"), Nominal(":White"))))
+    parsing(":RedWine & (#E :hasColor.#t)") should equal(Intersection(Concept(":RedWine"), Existential(Role(":hasColor"), Top)))
   }
 
   "The Parser" should "parse negated expressions" in {
@@ -136,5 +140,14 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
     parsing("!:Wine & :Food | :Door & :Wall") should equal(Union(Intersection(Negation(Concept(":Wine")), Concept(":Food")), Intersection(Concept(":Door"), Concept(":Wall"))))
     parsing("!(:Wine & :Food) | :Door & :Wall") should equal(Union(Negation(Intersection(Concept(":Wine"), Concept(":Food"))), Intersection(Concept(":Door"), Concept(":Wall"))))
     parsing("!(:Wine & :Food | :Door & :Wall)") should equal(Negation(Union(Intersection(Concept(":Wine"), Concept(":Food")), Intersection(Concept(":Door"), Concept(":Wall")))))
+  }
+
+  "The Parser" should "parse scala types" in {
+    implicit val parserToTest: Parser[DLEConcept] = dlexpr
+    //parsing("Int") should equal(Type("Int"))
+    //parsing("String") should equal(Type("String"))
+    //parsing("Double") should equal(Type("Double"))
+    //parsing("Float") should equal(Type("Float"))
+    //parsing("Boolean") should equal(Type("Boolean"))
   }
 }

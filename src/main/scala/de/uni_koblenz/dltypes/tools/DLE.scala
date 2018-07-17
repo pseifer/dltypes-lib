@@ -4,8 +4,22 @@ package tools
 import scala.collection.mutable.SetBuilder
 import org.semanticweb.owlapi.model._
 
+object DLE {
+  val pp = new PrettyPrinter
+  val parser = new Parser
 
-sealed trait DLE
+  def parse(tpt: String): Either[String, DLEConcept] =
+    DLE.parser.parse(DLE.parser.dlexpr, Util.decode(tpt)) match {
+      case DLE.parser.Success(m, _) =>
+        Right(m.asInstanceOf[DLEConcept])
+      case DLE.parser.NoSuccess(reason, _) =>
+        Left(reason)
+    }
+}
+
+sealed trait DLE {
+  def pretty(stripPrefix: Option[String] = None): String = DLE.pp.print(this, stripPrefix)
+}
 
 sealed trait DLETruthy extends DLE
 case class Subsumed(c: DLEConcept, d: DLEConcept) extends DLETruthy
@@ -37,7 +51,6 @@ case class IndividualN(i: OWLNamedIndividual) extends DLEIndividual {
   override def iri: String = i.getIRI.toString
   override def toString: String = iri
 }
-
 
 sealed trait DLEConcept extends DLE {
   // Equality check that considers commutativity of intersection/union.
@@ -109,6 +122,13 @@ case class Union(lexpr: DLEConcept, rexpr: DLEConcept) extends DLEConcept {
 }
 
 object DLEConcept {
+
+  def intersectionOf(cs: List[DLEConcept]): DLEConcept =
+    simplify(cs.foldLeft(Top: DLEConcept)(Intersection))
+
+  def unionOf(cs: List[DLEConcept]): DLEConcept =
+    simplify(cs.foldLeft(Bottom: DLEConcept)(Union))
+
   // Substitute variable with expression.
   def substitute(concept: DLEConcept, v: Variable, other: DLEConcept): DLEConcept = {
     def p(c: DLEConcept): DLEConcept = {
@@ -199,17 +219,17 @@ object DLEConcept {
         case Universal(_, Top) => Top // ?
         // Rewrite Universal to Negation
         case Universal(r, expr) => Negation(Existential(r, Negation(expr)))
-        case Union(lexpr, rexpr) => Union(p(lexpr), p(rexpr))
-        case Intersection(lexpr, rexpr) => Intersection(p(lexpr), p(rexpr))
-        case Variable(v) => Variable(v)
         // Traverse
         case Top => Top
         case Bottom => Bottom
         case Nominal(i) => Nominal(i)
         case Type(i) => Type(i)
         case Concept(i) => Concept(i)
+        case Variable(v) => Variable(v)
         case Negation(c) => Negation(p(c))
         case Existential(r, expr) => Existential(r, p(expr))
+        case Union(lexpr, rexpr) => Union(p(lexpr), p(rexpr))
+        case Intersection(lexpr, rexpr) => Intersection(p(lexpr), p(rexpr))
       }
     }
     p(simplify(concept))
