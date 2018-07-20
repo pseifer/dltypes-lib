@@ -5,6 +5,7 @@ name := "dltypes-lib"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.3"
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6"
+libraryDependencies += "net.sourceforge.owlapi" % "owlapi-apibinding" % "3.4"
 
 resolvers += "Stardog Public" at "http://maven.stardog.com"
 libraryDependencies += "com.complexible.stardog" % "server" % "5.2.1"
