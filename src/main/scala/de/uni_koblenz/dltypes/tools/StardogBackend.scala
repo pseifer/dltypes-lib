@@ -32,6 +32,7 @@ object StardogBackend {
       con.get.close()
   }
 
+  // Execute ASK query.
   def ask(query: String): Boolean =
     try {
       return con.get.ask(query).execute()
@@ -41,6 +42,7 @@ object StardogBackend {
         false
     }
 
+  // Execute SELECT query.
   def run(query: String, typeHint: String): List[Product] = {
     val hints = typeHint.map( x =>
       if (x == '0') false

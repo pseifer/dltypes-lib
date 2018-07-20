@@ -3,6 +3,8 @@ package runtime
 
 import tools._
 
+// The static annotation representing DL types (internally).
+case class dl(s: String) extends scala.annotation.StaticAnnotation
 
 // Type that is used to represent DLTypes at compile time
 // and is also the supertype of all runtime DLTypes.
@@ -16,10 +18,7 @@ sealed trait DLType {
   def boolean: Boolean
 }
 
-
-case class dl(s: String) extends scala.annotation.StaticAnnotation
-
-
+// Implementation of DLType.
 case class IRI(value: String) extends DLType {
   def isSubsumed(tpe: DLEConcept, prefixes: String): Boolean = {
     val simple = DLEConcept.simplifyPlus(tpe)
@@ -40,22 +39,24 @@ case class IRI(value: String) extends DLType {
   override def toString = "<" + value + ">"
 }
 
+// StringBuilder and connection API for SPARQL.
 object Sparql {
 
+  // Connect to triple store.
   def connect(url: String, db: String): Unit =
     StardogBackend.connect(url, db)
 
+  // Connect to triple store.
   def connect(url: String, db: String, user: String, pwd: String): Unit =
     StardogBackend.connect(url, db, user, pwd)
 
+  // Disconnect from triple store.
   def disconnect(): Unit =
     StardogBackend.disconnect()
 
   // Clean up a value to avoid injections.
-  private def clean(value: String) = {
-    // TODO: Check for all fishy unicode chars.
+  private def clean(value: String) =
     value.filter(_ != '"')
-  }
 
   // Wrap a value as SPARQL data value.
   private def wrap(value: String, typename: String) = "\"" + value + "\"" + "^^" + typename

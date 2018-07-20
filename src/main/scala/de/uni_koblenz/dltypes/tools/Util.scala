@@ -2,7 +2,6 @@ package de.uni_koblenz.dltypes
 package tools
 
 object Util {
-
   val dlcharmap: Map[String, String] = Map(
     "$colon" -> ":",
     "$dot"   -> ".",
@@ -26,9 +25,13 @@ object Util {
     "$u2293" -> "⊓",
     "$u2294" -> "⊔")
 
+  // Decode the escape special symbols in quoted identifiers,
+  // so they can be parsed.
   def decode(s: String): String =
     dlcharmap.foldLeft(s) { (a,b) => a.replaceAllLiterally(b._1, b._2) }
 
+  // Test is the string contains any of the symbols
+  // used to construct DL types.
   def isDLTypeHeuristic(s: String): Boolean =
     dlcharmap.keys.exists(s.contains)
 }

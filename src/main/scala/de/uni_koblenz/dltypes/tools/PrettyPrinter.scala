@@ -4,6 +4,7 @@ package tools
 
 class PrettyPrinter {
 
+  // Pretty print DL expression. Strips prefix if supplied.
   def print(dle: DLE, stripPrefix: Option[String] = None): String = {
 
     def dleIri(s: String): String =
@@ -38,7 +39,7 @@ class PrettyPrinter {
     }
 
     def dleConcept(dle: DLEConcept): String = dle match {
-      case Variable(_) => throw new Exception // TODO
+      case Variable(_) => throw new Exception
       case Top => "⊤"
       case Bottom => "⊥"
       case Nominal(iri) => "{" + dleIri(iri) + "}"
