@@ -9,8 +9,14 @@ case class dl(s: String) extends scala.annotation.StaticAnnotation
 // Type that is used to represent DLTypes at compile time
 // and is also the supertype of all runtime DLTypes.
 sealed trait DLType {
+
+  // Runtime subsumed test.
   def isSubsumed(tpe: DLEConcept, prefixes: String): Boolean
 
+  // Equality using owl:sameAs.
+  def sameAs(d: DLType): Boolean
+
+  // XSD to Scala type casts.
   def string: String
   def int: Int
   def float: Float
@@ -30,13 +36,17 @@ case class IRI(value: String) extends DLType {
     }
   }
 
+  def sameAs(d: DLType): Boolean = sameAs(d.asInstanceOf[IRI])
+  def sameAs(iri: IRI): Boolean =
+    StardogBackend.ask(QueryBuilder.askSameAs(this.toString, iri.toString))
+
   def string: String = value
   def int: Int = value.toInt
   def float: Float = value.toFloat
   def double: Double = value.toDouble
   def boolean: Boolean = value.toBoolean
 
-  override def toString = "<" + value + ">"
+  override def toString: String = "<" + value + ">"
 }
 
 // StringBuilder and connection API for SPARQL.

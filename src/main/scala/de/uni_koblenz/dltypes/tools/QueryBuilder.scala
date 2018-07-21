@@ -4,7 +4,7 @@ package de.uni_koblenz.dltypes.tools
 object QueryBuilder {
   private val parser = new Parser
 
-  private def prefixes(globals: String) =
+  private def prefixes(globals: String = "") =
     s"""
       |PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       |PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -47,4 +47,7 @@ object QueryBuilder {
     Gensym.reset()
     prefixes(globalPrefixes) + s"ASK { ${conceptToQuery(value, tpe)} }"
   }
+
+  def askSameAs(lhs: String, rhs: String): String =
+    prefixes() + s"ASK { $lhs owl:sameAs $rhs }"
 }
