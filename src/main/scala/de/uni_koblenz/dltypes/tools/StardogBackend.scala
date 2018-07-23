@@ -8,6 +8,8 @@ import de.uni_koblenz.dltypes.runtime.IRI
 object StardogBackend {
   var con: Option[Connection] = None
 
+  private def isConnected: Boolean = con.isDefined
+
   def connect(url: String, db: String): Unit = {
     disconnect()
     con = Some(ConnectionConfiguration
@@ -33,7 +35,9 @@ object StardogBackend {
   }
 
   // Execute ASK query.
-  def ask(query: String): Boolean =
+  def ask(query: String): Boolean = {
+    if (!isConnected) throw new RuntimeException("Not connected to the triple store.")
+
     try {
       return con.get.ask(query).execute()
     } catch {
@@ -41,9 +45,12 @@ object StardogBackend {
         println(e)
         false
     }
+  }
 
   // Execute SELECT query.
   def run(query: String, typeHint: String): List[Product] = {
+    if (!isConnected) throw new RuntimeException("Not connected to the triple store.")
+
     val hints = typeHint.map( x =>
       if (x == '0') false
       else true)
