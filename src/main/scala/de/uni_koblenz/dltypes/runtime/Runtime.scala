@@ -14,7 +14,7 @@ sealed trait DLType {
   def isSubsumed(tpe: DLEConcept, prefixes: String): Boolean
 
   // Equality using owl:sameAs.
-  def sameAs(d: DLType): Boolean
+  def sameAs(other: Any): Boolean
 
   // XSD to Scala type casts.
   def string: String
@@ -36,9 +36,12 @@ case class IRI(value: String) extends DLType {
     }
   }
 
-  def sameAs(d: DLType): Boolean = sameAs(d.asInstanceOf[IRI])
-  def sameAs(iri: IRI): Boolean =
-    StardogBackend.ask(QueryBuilder.askSameAs(this.toString, iri.toString))
+  def sameAs(other: Any): Boolean =
+    other match {
+      case iri: IRI =>
+        StardogBackend.ask(QueryBuilder.askSameAs(this.toString, iri.toString))
+      case _ => false
+    }
 
   def string: String = value
   def int: Int = value.toInt
