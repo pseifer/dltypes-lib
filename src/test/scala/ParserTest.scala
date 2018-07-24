@@ -141,13 +141,4 @@ class ParserTest extends Parser with FlatSpecLike with Matchers {
     parsing("!(:Wine & :Food) | :Door & :Wall") should equal(Union(Negation(Intersection(Concept(":Wine"), Concept(":Food"))), Intersection(Concept(":Door"), Concept(":Wall"))))
     parsing("!(:Wine & :Food | :Door & :Wall)") should equal(Negation(Union(Intersection(Concept(":Wine"), Concept(":Food")), Intersection(Concept(":Door"), Concept(":Wall")))))
   }
-
-  "The Parser" should "parse scala types" in {
-    implicit val parserToTest: Parser[DLEConcept] = dlexpr
-    //parsing("Int") should equal(Type("Int"))
-    //parsing("String") should equal(Type("String"))
-    //parsing("Double") should equal(Type("Double"))
-    //parsing("Float") should equal(Type("Float"))
-    //parsing("Boolean") should equal(Type("Boolean"))
-  }
 }

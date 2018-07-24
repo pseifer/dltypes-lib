@@ -12,15 +12,11 @@ class PrettyPrinterTest extends Parser with FlatSpecLike with Matchers {
   private def roundtripping[T](s: String)(implicit p: Parser[T]): Boolean = {
     val phraseParser = phrase(p)
     val input = new CharSequenceReader(s)
-    println(s)
     phraseParser(input).map { t =>
-      println(t)
       val s = pp.print(t.asInstanceOf[DLEConcept])
       val input = new CharSequenceReader(s)
-      println(s)
       phraseParser(input) match {
         case Success(t2, _) =>
-          println(t2)
           t2 == t
         case NoSuccess(msg, _) => throw new IllegalArgumentException(
           "Parser error in '" + s + "': " + msg)
